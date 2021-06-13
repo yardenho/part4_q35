@@ -1,3 +1,4 @@
+"""https://github.com/yardenho/part4_q35.git"""
 
 def neville(pointsList, m, n, X):
     """
@@ -198,13 +199,36 @@ def polynomial(pointsList, X):
     return res
 
 
+def calcFinalResult(result, epsilon, day, hour, minutes):
+    """
+    :param result: the result
+    :param epsilon: the epsilon we decided on for the question
+    :param day: the day of the calculation
+    :param hour: the hour of the calculation
+    :param minutes: the minutes of the calculation
+    :return: the result by the requested format
+    """
+    stringRes = str(result)  # cast the result to string
+    i = 0
+    while stringRes[i] is not ".":  # run over the string while we get to the point
+        i += 1  # count how many digits there is before the point
+    i += 1
+    count = 1
+    while epsilon < 1:  # checking how digit needs after the point
+        epsilon *= 10
+        count += 1
+    stringRes = stringRes[:i + count] + "00000" + day + hour + minutes
+    return stringRes
+
+
 def Derive():
     point_list = [[1.2, 3.5095], [1.3, 3.6984], [1.4, 3.9043], [1.5, 4.1293], [1.6, 4.3756]]
     X = 1.37
+    epsilon = 10 **-4
     print("==== Neville Method ====")
-    print("Final result:\nf(" + str(X) + ") = " + str(neville(point_list, 0, len(point_list) - 1, X)))
+    print("Final result:\nf(" + str(X) + ") = " + str(calcFinalResult(neville(point_list, 0, len(point_list) - 1, X), epsilon, '13', '18', '59')))
     print("\n==== Polynomial Method ====\n")
-    print("Final result:\nf(" + str(X) + ") = " + str(polynomial(point_list, X)))
+    print("Final result:\nf(" + str(X) + ") = " + str(calcFinalResult(polynomial(point_list, X),epsilon ,'13', '18', '59')))
 
 
 Derive()

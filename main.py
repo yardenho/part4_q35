@@ -36,40 +36,85 @@ def newMat(numRow, numCol):
     return mat
 
 
-def printMatrix(a):
+# def printMatrix(a):
+#     """
+#     :param a: a matrix to print
+#     :return: prints in matrix format
+#     """
+#     print("-----------------------------")
+#     for i in range(len(a)):
+#         if i is len(a)-1:
+#             print(" " + str(a[i]) + "]")
+#         elif i is 0:
+#             print("[" + str(a[i]))
+#         else:
+#             print(" " + str(a[i]))
+#     print("-----------------------------\n")
+
+def printMatrix(a, name=None):
     """
     :param a: a matrix to print
     :return: prints in matrix format
     """
     print("-----------------------------")
+    if name is not None:
+        print(name + " = ")
     for i in range(len(a)):
-        if i is len(a)-1:
+        if i is len(a) - 1:
             print(" " + str(a[i]) + "]")
         elif i is 0:
             print("[" + str(a[i]))
         else:
             print(" " + str(a[i]))
-    print("-----------------------------\n")
+    print("")
 
 #start LUD composition
 
 def LUdecomposition(mat, b):
     """
     :param mat: the coefficients matrix
-    :param b:  the solution vector
+    :param b: the solution vector
     :return: none
     """
-    inversL, L = toUpperTriangularMat(mat)  # calculate the L matrix and the inverse L
+    inversL, L, counter = toUpperTriangularMat(mat)  # calculate the L matrix and the inverse L
+    print("-----------------------------")
+    string = "L = "
+    for i in range(1, counter):
+        if i < counter - 1:
+            string += "invJ" + str(i) + " * "
+        else:
+            string += "invJ" + str(i)
+    print(string)
+    printMatrix(L, "L")  # print the L matrix
+    print("-----------------------------")
+    string = "inverse L = "
+    for i in range(counter - 1, 0, -1):
+        if i > 1:
+            string += "J" + str(i) + " * "
+        else:
+            string += "J" + str(i)
+    print(string)
+    printMatrix(inversL, "inverse L")
+    print("-----------------------------")
+    print("U = invL * A")
     U = multMat(inversL, mat)  # calculate the U matrix
-    inversU = FromUpperToInvers(U, createIdentityMatrix(len(U)))  # calculate thr inverse of U
+    inversU, counter = FromUpperToInvers(U, createIdentityMatrix(len(U)))  # calculate thr inverse of U
+    print("-----------------------------")
+    string = "inverse U = "
+    for i in range(counter - 1, 0, -1):
+        string += "E" + str(i) + " * "
+    string += "U"
+    print(string)
+    printMatrix(U, "U")  # print the U matrix
+    print("-----------------------------")
+    print("x = invU * invL * b")
     x = multMat(inversL, b)  # finding the result vector
     x = multMat(inversU, x)  # finding the result vector
-    print("X = ")
-    printMatrix(x)  # print the X matrix
+    printMatrix(x, "x")  # print the X matrix
     return x
 
 
-def FromUpperToInvers(A, inverseMat):
+def FromUpperToInvers(A, inverseMat, counter=1):
     """
     :param A: upper matrix
     :param inverseMat: the matrix that will become the inverse
@@ -81,13 +126,17 @@ def FromUpperToInvers(A, inverseMat):
             elemntarMat[j][i] = -(A[j][i] / A[i][i])
             A = multMat(elemntarMat, A)
             inverseMat = multMat(elemntarMat, inverseMat)
+            printMatrix(elemntarMat, "E" + str(counter))
+            counter += 1
             elemntarMat[j][i] = 0
         if A[i][i] != 1:  # convert the pivots to one
             elemntarMat[i][i] = 1 / A[i][i]
             A = multMat(elemntarMat, A)
             inverseMat = multMat(elemntarMat, inverseMat)
+            printMatrix(elemntarMat, "E" + str(counter))
+            counter += 1
             elemntarMat[i][i] = 1
-    return inverseMat
+    return inverseMat, counter
 
 
 def toUpperTriangularMat(A):
@@ -97,23 +146,31 @@ def toUpperTriangularMat(A):
     """
     L = createIdentityMatrix(len(A))  # create indetity matrix
     InL = createIdentityMatrix(len(A))  # create indetity matrix
+    counter = 1
     for i in range(len(A)):  # run over the lines
         if A[i][i] == 0:  # if the pivot is 0
             for j in range(i + 1, len(A)):  # run over the columns
                 if A[j][i] != 0:  # if the element under the pivot is not 0
-                    L = multMat((L, linesExchange(A, i, j)))  # make lines exchange and multiply
+                    elementary = linesExchange(A, i, j)
+                    L = multMat(L, elementary)  # make lines exchange and multiply
+                    printMatrix(elementary, "J" + str(counter))
                     InL = multMat((linesExchange(A, i, j)), InL)  # make lines exchange and multiply
+                    printMatrix(identity, "inverse J" + str(counter))
                     A = multMat((linesExchange(A, i, j)), A)
+                    counter += 1
                     break
         if A[i][i] != 0:  # check if B is regular
             for j in range(i + 1, len(A)):  # run over the columns
                 identity = createIdentityMatrix(len(A))
                 identity[j][i] = -(A[j][i] / A[i][i])  # elementary matrix
+                printMatrix(identity, "J" + str(counter))
                 InL = multMat(identity, InL)  # L^(-1)
                 A = multMat(identity, A)
                 identity[j][i] *= -1  # changing the element in order to find L
+                printMatrix(identity, "inverse J" + str(counter))
                 L = multMat(L, identity)
-    return InL, L
+                counter += 1
+    return InL, L, counter
 
 
 def linesExchange(A, line1, line2):
@@ -228,8 +285,8 @@ def Derive():
     print("==== Neville Method ====")
     n = neville(point_list, 0, len(point_list) - 1, X)
     print("Final result:\nf(" + str(X) + ") = " + str(calcFinalResult(n, epsilon, '13', '18', '59')))
-    p = polynomial(point_list, X)
     print("\n==== Polynomial Method ====\n")
+    p = polynomial(point_list, X)
     print("Final result:\nf(" + str(X) + ") = " + str(calcFinalResult(p,epsilon ,'13', '18', '59')))
 
     if abs(n - p) < epsilon:

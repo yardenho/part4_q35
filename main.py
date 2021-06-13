@@ -224,7 +224,7 @@ def calcFinalResult(result, epsilon, day, hour, minutes):
 def Derive():
     point_list = [[1.2, 3.5095], [1.3, 3.6984], [1.4, 3.9043], [1.5, 4.1293], [1.6, 4.3756]]
     X = 1.37
-    epsilon = 10 **-4
+    epsilon = 10 ** -4
     print("==== Neville Method ====")
     print("Final result:\nf(" + str(X) + ") = " + str(calcFinalResult(neville(point_list, 0, len(point_list) - 1, X), epsilon, '13', '18', '59')))
     print("\n==== Polynomial Method ====\n")

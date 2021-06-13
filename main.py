@@ -226,9 +226,16 @@ def Derive():
     X = 1.37
     epsilon = 10 ** -4
     print("==== Neville Method ====")
-    print("Final result:\nf(" + str(X) + ") = " + str(calcFinalResult(neville(point_list, 0, len(point_list) - 1, X), epsilon, '13', '18', '59')))
+    n = neville(point_list, 0, len(point_list) - 1, X)
+    print("Final result:\nf(" + str(X) + ") = " + str(calcFinalResult(n, epsilon, '13', '18', '59')))
+    p = polynomial(point_list, X)
     print("\n==== Polynomial Method ====\n")
-    print("Final result:\nf(" + str(X) + ") = " + str(calcFinalResult(polynomial(point_list, X),epsilon ,'13', '18', '59')))
+    print("Final result:\nf(" + str(X) + ") = " + str(calcFinalResult(p,epsilon ,'13', '18', '59')))
+
+    if abs(n - p) < epsilon:
+        print("\n* The difference between the two methods is smaller than the epsilon")
+    else:
+        print("\n* The difference between the two methods is bigger than the epsilon - needs another method")
 
 
 Derive()

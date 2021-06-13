@@ -36,21 +36,6 @@ def newMat(numRow, numCol):
     return mat
 
 
-# def printMatrix(a):
-#     """
-#     :param a: a matrix to print
-#     :return: prints in matrix format
-#     """
-#     print("-----------------------------")
-#     for i in range(len(a)):
-#         if i is len(a)-1:
-#             print(" " + str(a[i]) + "]")
-#         elif i is 0:
-#             print("[" + str(a[i]))
-#         else:
-#             print(" " + str(a[i]))
-#     print("-----------------------------\n")
-
 def printMatrix(a, name=None):
     """
     :param a: a matrix to print

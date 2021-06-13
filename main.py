@@ -263,7 +263,7 @@ def calcFinalResult(result, epsilon, day, hour, minutes):
     return stringRes
 
 
-def Derive():
+def Driver():
     point_list = [[1.2, 3.5095], [1.3, 3.6984], [1.4, 3.9043], [1.5, 4.1293], [1.6, 4.3756]]
     X = 1.37
     epsilon = 10 ** -4
@@ -280,4 +280,4 @@ def Derive():
         print("\n* The difference between the two methods is bigger than the epsilon - needs another method")
 
 
-Derive()
+Driver()
